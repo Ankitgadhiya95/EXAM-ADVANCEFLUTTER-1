@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../model/newsmodel.dart';
@@ -68,7 +69,7 @@ class _DetailPageState extends State<DetailPage> {
                             width: 100,
 
                           ),
-                          Icon(Icons.save)
+                          Icon(CupertinoIcons.heart)
                         ],
                       ),SizedBox(
                         height: 30,

@@ -2,8 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapp/api/newsapi.dart';
 import 'package:newsapp/model/newsmodel.dart';
+import 'package:newsapp/newsprovider.dart';
+import 'package:provider/provider.dart';
 import 'detailpage.dart';
 import 'likednews.dart';
+import 'newsscreen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,11 +22,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+
+    final newsProvide =Provider.of<NewsProvide>(context,listen: false);
+
+
     setState(() {
       isLoading = true;
       isCategory = true;
     });
-    News().loadNews().then((value) {
+    newsProvide.loadNews().then((value) {
       setState(() {
         isLoading = false;
       });
@@ -31,7 +38,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       isCategory = true;
     });
-    News().loadCategoryWiseNews("business").then((value) {
+    newsProvide.loadCategoryWiseNews("business").then((value) {
       setState(() {
         isCategory = false;
       });
@@ -42,6 +49,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final newsProvide = Provider.of<NewsProvide>(context,listen: true);
     return Scaffold(
       appBar: AppBar(
         title: Text("NEWS"),
@@ -75,62 +83,73 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           scrollDirection: Axis.horizontal,
                           autoPlay: true,
                         ),
-                        items: newsList
+                        items: newsProvide.newsList
                             .map((e) => Center(
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                            "Assets/img/img.png",
-                                          ),
-                                          fit: BoxFit.cover),
-                                      //  color: Colors.red,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                child: Text(
-                                                  e.category!,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (context) => NewsScreen(
+                                            name: e.name!,
+                                            category: e.category!,
+                                            description:  e.description!,
+                                          )));
+                                    },
+
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                              "Assets/img/img.png",
+                                            ),
+                                            fit: BoxFit.cover),
+                                        //  color: Colors.red,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(5.0),
+                                                  child: Text(
+                                                    e.category!,
+                                                    style: TextStyle(
+                                                        color: Colors.green,
+                                                        fontSize: 15),
+                                                  ),
+                                                )),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  e.name!,
                                                   style: TextStyle(
-                                                      color: Colors.green,
-                                                      fontSize: 15),
+                                                      color: Colors.white,
+                                                      fontSize: 16),
                                                 ),
-                                              )),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                e.name!,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16),
-                                              ),
-                                              Text(
-                                                e.description!,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                Text(
+                                                  e.description!,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -147,14 +166,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 children: [
                   InkWell(
                     onTap: () {
-                      News().loadCategoryWiseNews('business');
+                      setState(() {
+                        isCategory = true;
+                      });
+                      newsProvide.loadCategoryWiseNews('business').then((value) {
+                        setState(() {
+                          isCategory = false;
+                        });
+                      });
                     },
                     child: Container(
                       height: 36,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            20,
-                          ),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.red)),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -167,14 +191,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   InkWell(
                     onTap: () {
-                      News().loadCategoryWiseNews('entertainment');
+                      setState(() {
+                        isCategory = true;
+                      });
+                      newsProvide
+                          .loadCategoryWiseNews('entertainment')
+                          .then((value) {
+                        setState(() {
+                          isCategory = false;
+                        });
+                      });
                     },
                     child: Container(
                       height: 36,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            20,
-                          ),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.red)),
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -186,14 +217,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   InkWell(
                     onTap: () {
-                      News().loadCategoryWiseNews('general');
+                      setState(() {
+                        isCategory = true;
+                      });
+                      newsProvide
+                          .loadCategoryWiseNews('general')
+                          .then((value) {
+                        setState(() {
+                          isCategory = false;
+                        });
+                      });
+
                     },
                     child: Container(
                       height: 36,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            20,
-                          ),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.red)),
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -205,14 +244,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   InkWell(
                       onTap: () {
-                        News().loadCategoryWiseNews('business');
+                        setState(() {
+                          isCategory = true;
+                        });
+                        newsProvide
+                            .loadCategoryWiseNews('health')
+                            .then((value) {
+                          setState(() {
+                            isCategory = false;
+                          });
+                        });
+
                       },
                       child: Container(
                         height: 36,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              20,
-                            ),
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.red)),
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -223,14 +270,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   InkWell(
                       onTap: () {
-                        News().loadCategoryWiseNews('business');
+                        setState(() {
+                          isCategory = true;
+                        });
+                        newsProvide
+                            .loadCategoryWiseNews('science')
+                            .then((value) {
+                          setState(() {
+                            isCategory = false;
+                          });
+                        });
+
                       },
                       child: Container(
                         height: 36,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              20,
-                            ),
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.red)),
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -241,14 +296,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   InkWell(
                       onTap: () {
-                        News().loadCategoryWiseNews('sports');
+                        setState(() {
+                          isCategory = true;
+                        });
+                        newsProvide
+                            .loadCategoryWiseNews('sports')
+                            .then((value) {
+                          setState(() {
+                            isCategory = false;
+                          });
+                        });
+
                       },
                       child: Container(
                         height: 36,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              20,
-                            ),
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.red)),
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -258,8 +321,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     width: 10,
                   ),
                   InkWell(
-                      onTap: () {
-                        News().loadCategoryWiseNews('tecgnology');
+                      onTap: (){
+                        setState(() {
+                          isCategory = true;
+                        });
+                        newsProvide
+                            .loadCategoryWiseNews('tecgnology')
+                            .then((value) {
+                          setState(() {
+                            isCategory = false;
+                          });
+                        });
+
                       },
                       child: Container(
                         height: 36,
@@ -286,7 +359,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         height: 400,
                         child:
                             TabBarView(controller: _tabController, children: [
-                          DetailPage(NewsList: categoryWiseList),
+                          DetailPage(NewsList: newsProvide.getCategoryWiseList),
                         ]),
                       ),
               ],

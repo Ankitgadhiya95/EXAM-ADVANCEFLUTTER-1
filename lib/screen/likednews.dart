@@ -16,7 +16,7 @@ class _LikedNewsScreenState extends State<LikedNewsScreen> {
       ),
       body: Column(
         children: [
-          Text("Hello")
+          Center(child: Text("Empty Likes"))
         ],
       ),
     );

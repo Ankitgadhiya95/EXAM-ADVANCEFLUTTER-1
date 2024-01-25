@@ -19,7 +19,6 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor!,
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.category),
@@ -29,28 +28,27 @@ class _NewsScreenState extends State<NewsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 20,
-              ),
               Container(
                 height: 280,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    color: Colors.red, borderRadius: BorderRadius.circular(20)
-                    // image: DecorationImage(
-                    //     image: AssetImage(widget.image), fit: BoxFit.cover),
-                    ),
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                      image: AssetImage("Assets/img/img_1.png"),
+                      fit: BoxFit.cover),
+                ),
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Text(
                 widget.name,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize:
-                      15, /*  color: Theme.of(context).appBarTheme.titleTextStyle!.color*/
+                  fontSize: 30,
+                  color: Colors.black,
                 ),
               ),
               SizedBox(
@@ -58,17 +56,15 @@ class _NewsScreenState extends State<NewsScreen> {
               ),
               Text(
                 widget.category,
-                style: TextStyle(
-                  fontSize: 13,
-                  /* color: Theme.of(context).appBarTheme.titleTextStyle!.color*/
-                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(
+                height: 5,
               ),
               Text(
                 widget.description,
                 style: TextStyle(
-                  // fontWeight: FontWeight.w400,
                   fontSize: 16,
-                  // color: Theme.of(context).appBarTheme.titleTextStyle!.color,
                 ),
               ),
             ],

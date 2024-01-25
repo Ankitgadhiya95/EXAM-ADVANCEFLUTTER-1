@@ -106,5 +106,4 @@ class EnumValues<T> {
 }
 
 
-List <Source> newsList=[];
-List <Source> categoryWiseList=[];
+

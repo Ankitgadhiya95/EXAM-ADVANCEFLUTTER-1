@@ -29,13 +29,13 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
 
         children: [
-          // Container(
-          //   height: 300,
-          //   width: double.infinity,
-          //   decoration: BoxDecoration(
-          //       image: DecorationImage(
-          //           image: AssetImage('asset/slock_images/1.jpeg'))),
-          // ),
+          Container(
+            height: 300,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('Assets/img/img_2.png'))),
+          ),
           Center(
             child: Text(
               "News App",
